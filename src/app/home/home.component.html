@@ -1,0 +1,177 @@
+<h1>OBJECT</h1>
+<div class="row">
+  <div class="col-12">
+    <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Name </th>
+            <th scope="col">Date</th>
+            <th scope="col">Cheker</th>
+            <th scope="col">Radio</th>
+            <th scope="col">Select</th>
+            <th scope="col">Mail</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let ob of testObjects |
+                      paginate: { itemsPerPage: pagination.itemsPerPage,
+                                  currentPage : pagination.currentPage}; 
+                      let i = index;"
+                      (click)="onSelect(ob)">
+            <th scope="row">{{ ob.getId() }}</th>
+            <td scope="row">{{ ob.getName() }}</td>
+            <td scope="row">{{ ob.getDate() }}</td>
+            <td scope="row">{{ ob.getChecker() }}</td>
+            <td scope="row">{{ ob.getRadier() }}</td>
+            <td scope="row">{{ ob.getSelector() }}</td>
+            <td scope="row">{{ ob.getMail() }}</td>
+          </tr>
+        </tbody>
+    </table>
+    <pagination-controls 
+      (pageChange)="pagination.currentPage=$event"
+      max-size="5"
+      directionLinks="true"
+      autoHide="true">
+    </pagination-controls>
+  </div>
+</div>
+
+<form 
+  #testObjectEntryForm="ngForm"
+  (submit)="ObjectEntry()" novalidate>
+  
+  <div class="form-row">
+    <div class="col-4">
+      <label> ID </label>
+      <input type="text" class="form-control" placeholder="DNI" 
+        #id="ngModel" 
+        [(ngModel)]="testObjectForm.id" 
+        name="id"
+          required 
+          minlength="2"
+          appIdObjectValidation
+          (keyup)="mayus($event)">
+      <small>Required  and a VALID id<a class="errorInfo" *ngIf="!id.valid && id.touched">
+      Dni is not valid. Must be unique. </a></small>
+    </div>
+
+    <div class="col-4">
+      <label> Date </label>
+        <input class="form-control" 
+          [ngModel]="testObjectForm.date | date:'yyyy-MM-dd'" 
+          name="date" 
+          (ngModelChange)="testObjectForm.date = $event"
+          type="date" 
+          #date="ngModel"
+            required/>
+
+      <small>Required <a class="errorInfo" *ngIf="!date.valid && date.touched">
+      Date is not valid.</a></small>
+    </div>
+    <div class="col-4">
+      <label class="control-label" for="formGroup"> Select </label>
+      <select class="form-control" 
+        #select="ngModel" 
+        [(ngModel)]="testObjectForm.selector"
+        name="select"
+          required
+      >
+        <option *ngFor="let s of selects" value="{{s}}">
+          {{s}}
+        </option>
+      </select>
+      <small>Required <a class="errorInfo" *ngIf="!select.valid && select.touched">
+      Select is not valid. Please, select one</a></small>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="col-3">
+      <label> Nombre </label>
+      <input type="text" class="form-control" placeholder="name"
+      #name="ngModel"
+      [(ngModel)]="testObjectForm.name"
+      name="name"
+        required 
+        minlength="2"
+      >
+      <small>Required <a class="errorInfo" *ngIf="!name.valid && name.touched">
+      Name is not valid. Minlenght 2</a></small>
+    </div>
+
+    <div class="col-5">
+      <label> Email </label>
+      <input 
+        type="email" 
+        class="form-control" 
+        placeholder="email@email.com"
+        #pMail="ngModel"
+        [(ngModel)]="testObjectForm.mail"
+        name="pMail"
+          required
+          minlength="2"
+          pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+      >
+      <small>Required <a class="errorInfo" *ngIf="!pMail.valid && pMail.touched">
+      Email is not a valid one</a></small>
+    </div>
+
+
+    <div class="col-5">
+      <label> Radio </label>
+      <div class="form-group">
+        <div *ngFor="let rad of radios" class="radio">
+            <label>
+                <input type="radio" name="radio" value="{{rad}}" [(ngModel)]="testObjectForm.radier">
+                {{rad}}
+            </label>
+        </div>
+        
+      </div>
+    </div>
+ <!--  <div class="col-5">
+      <label> Email </label>
+      <input type="email" class="form-control" placeholder="email@email.com"
+        #pMail="ngModel"
+        [(ngModel)]="testObjectForm.mail"
+        name="pMail"
+          required
+          minlength="2"
+          pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+      >
+      <small>Required <a class="errorInfo" *ngIf="!pMail.valid && pMail.touched">
+      Email is not a valid one</a></small>
+    </div>
+--> 
+  </div>
+  <div class="form-row">
+    <div class="col-12">
+        <label class="col-sm-2 form-check-label">checkbox</label>
+        <div class="col-sm-6">
+          <span class="ml-4" *ngFor="let chek of chekers">
+            <input 
+            type="checkbox" 
+            class="form-check-input"  
+            (click)="checkAddRemove(chek)"
+            [checked]="checkIfExists(chek)" />{{chek}}
+          </span>
+        </div>
+      </div>
+  </div>
+
+
+
+  <div class="form-row m-5">
+    <div class="col-12">
+      <button type="submit" class="btn btn-primary btn-block"
+        name="button"
+        [disabled]="testObjectEntryForm.invalid "
+      >
+      Submit
+      </button>
+    </div>
+  </div>
+
+</form>
+
